@@ -20,6 +20,7 @@ from sklearn.ensemble import HistGradientBoostingClassifier
 
 from imblearn.over_sampling import RandomOverSampler
 from sklearn.metrics import classification_report
+
 #sys.path.append(os.path.dirname(os.path.abspath(__file__)) + './../..')
 sys.path.append(os.path.join(os.environ['TMPDIR'], 'mimic'))
 sys.path.append(os.path.join(os.environ['TMPDIR'], 'data2/output'))
@@ -42,6 +43,7 @@ class ML_models():
         self.model_type=model_type
         self.concat=concat
         self.oversampling=oversampling
+        self.fold=0
         self.loss=evaluation2.Loss('cpu',True,True,True,True,True,True,True,True,True,True,True)
         self.ml_train()
     def create_kfolds(self):
@@ -58,7 +60,7 @@ class ML_models():
         #print("Total Samples",len(hids))
         #print("Positive Samples",y.sum())
         #print(len(hids))
-        output_path= os.path.join(os.environ['TMPDIR'], 'data2/output')
+        output_path = os.path.join(os.environ['TMPDIR'], 'data2/output')
         with open(os.path.join(output_path,"model_results.txt"), "a") as file:
             file.write("Total Samples: {:.2f} \n".format(len(hids)))
             file.write("Positive Samples: {:.2f} \n".format(y.sum()))
@@ -88,54 +90,97 @@ class ML_models():
 
     def ml_train(self):
         k_hids=self.create_kfolds()
-        labels_path = os.path.join(os.environ['TMPDIR'], 'mimic/data/csv/labels.csv')        
+        labels_path = os.path.join(os.environ['TMPDIR'], 'mimic/data/csv/labels.csv')       
         labels=pd.read_csv(labels_path, header=0)
+        concat_cols=[]
+        if(self.concat):
+            dyn_path = os.path.join(os.environ['TMPDIR'], 'mimic/data/csv/')
+            dyn = pd.read_csv(dyn_path+str(k_hids[0].iloc[0])+'/dynamic.csv',header=[0,1])
+            dyn.columns=dyn.columns.droplevel(0)
+            cols = dyn.columns
+            time = dyn.shape[0]
+
+            for t in range(time):
+                cols_t = [x + "_"+str(t) for x in cols]
+                concat_cols.extend(cols_t)
+        #print('train_hids',len(train_hids))
+
+        total_hids = []
+
+        for j in range(len(k_hids)):
+            total_hids.extend(k_hids[j]) 
+        X,Y = self.getXY(total_hids,labels,concat_cols)
+     
+
+
+        #récupérer les données X_test1 de demo1
+        
         for i in range(self.k_fold):
             print("==================={0:2d} FOLD=====================".format(i))
-            test_hids=k_hids[i]
+            test_hids=k_hids[i].tolist()
             train_ids=list(set([0,1,2])-set([i]))
             train_hids=[]
             for j in train_ids:
                 train_hids.extend(k_hids[j])                    
+
+
+            indices_test_hids = []
+            for id in test_hids:
+                # Trouver le premier indice de id dans total_hids (s'il est présent)
+                index = total_hids.index(id)
+                indices_test_hids.append(index)
+            #print("indices_test_hids", indices_test_hids)
+
+
+
+            X_test = X.iloc[indices_test_hids]
+
+            # Crée une copie de labels où stay_id est dans test_hids pour éviter l'avertissement
+            labels_test = labels[labels['stay_id'].isin(test_hids)].copy()
             
-            concat_cols=[]
-            if(self.concat):
-                dyn_path = os.path.join(os.environ['TMPDIR'], 'mimic/data/csv/')
-                dyn=pd.read_csv(dyn_path+str(train_hids[0])+'/dynamic.csv',header=[0,1])
-                dyn.columns=dyn.columns.droplevel(0)
-                cols=dyn.columns
-                time=dyn.shape[0]
-
-                for t in range(time):
-                    cols_t = [x + "_"+str(t) for x in cols]
-
-                    concat_cols.extend(cols_t)
-            #print('train_hids',len(train_hids))
-
-            X_test,Y_test=self.getXY(test_hids,labels,concat_cols)
+            # Transformer 'stay_id' en une catégorie ordonnée selon test_hids
+            labels_test['stay_id'] = pd.Categorical(labels_test['stay_id'], categories=test_hids, ordered=True)
             
-            #récupérer les données X_test1 de demo1
+            
+            # Trier labels_test pour respecter l'ordre de test_hids
+            labels_test = labels_test.sort_values('stay_id').reset_index(drop=True)
+
+            y_test = labels_test.iloc[:,1]
+            y_test.fillna(0, inplace=True)  # Remplacer les NaN par 0 dans Y_train
+
+
+
             X_test1 = pd.DataFrame()
-            demo_path = os.path.join(os.environ['TMPDIR'], 'mimic/data/csv/')
+            demo_path =  os.path.join(os.environ['TMPDIR'], 'mimic/data/csv/')
             for sample in test_hids:
-                demo=pd.read_csv(demo_path+str(sample)+'/demo1.csv',header=0)
+                demo = pd.read_csv(demo_path+str(sample)+'/demo1.csv',header=0)
                 if X_test1.empty:
-                    X_test1=pd.concat([X_test1,demo],axis=1)
+                    X_test1 = pd.concat([X_test1,demo],axis=1)
                 else:
-                    X_test1=pd.concat([X_test1,demo],axis=0)
+                    X_test1 = pd.concat([X_test1,demo],axis=0)
             
-            self.test_data=X_test1.copy(deep=True)
+            self.test_data = X_test1.copy(deep=True)
 
 
 
-            labels_hids = labels[labels['stay_id'].isin(train_hids)]
-            y_hids = labels_hids.iloc[:,1]
-            #y_hids.fillna(0, inplace=True)  # Remplacer les NaN par 0 dans Y_train
+            # Crée une copie de labels où stay_id est dans test_hids pour éviter l'avertissement
+            labels_train = labels[labels['stay_id'].isin(train_hids)].copy()
+            
+            # Transformer 'stay_id' en une catégorie ordonnée selon test_hids
+            labels_train['stay_id'] = pd.Categorical(labels_train['stay_id'], categories=train_hids, ordered=True)
+            
+            
+            # Trier labels_test pour respecter l'ordre de test_hids
+            labels_train = labels_train.sort_values('stay_id').reset_index(drop=True)
 
-            output_path= os.path.join(os.environ['TMPDIR'], 'data2/output')
+
+            y_train = labels_train.iloc[:,1]
+            y_train.fillna(0, inplace=True)  # Remplacer les NaN par 0 dans Y_train
+            
+            output_path= os.path.join(os.environ['TMPDIR'], 'data2/output') 
             with open(os.path.join(output_path,"model_results.txt"), "a") as file:
                 file.write("==================={0:2d} FOLD=====================\n".format(i))
-                file.write("Positive sample of train dataset :{:.2f}  \n ".format(y_hids.sum()))
+                file.write("Positive sample of train dataset :{:.2f}  \n ".format(y_train.sum()))
                 file.write('train_hids:{:.2f} \n'.format(len(train_hids)))
                 file.write('test_hids: {:.2f} \n'.format(len(test_hids)))
    
@@ -143,145 +188,89 @@ class ML_models():
                 #print("=============OVERSAMPLING===============")
                 oversample = RandomOverSampler(sampling_strategy='minority')
                 train_hids=np.asarray(train_hids).reshape(-1,1)
-                train_hids, y_hids = oversample.fit_resample(train_hids, y_hids)
+                train_hids, y_train = oversample.fit_resample(train_hids, y_train)
                 train_hids=train_hids[:,0]
                 with open(os.path.join(output_path,"model_results.txt"), "a") as file:
                     file.write("=============OVERSAMPLING=============== \n")
                     file.write("Total Samples: {:.2f} \n".format(len(train_hids)))
-                    file.write("Positive Samples: {:.2f} \n".format(y_hids.sum()))
-               
-                      
-            X_train,Y_train=self.getXY(train_hids,labels,concat_cols)
-            X_dataset = pd.concat([X_train, X_test], axis=0, ignore_index=True)
-
-
-            #print('les données gender X_train avant l encodage:')
-            #print(X_train)
-            #print(X_train.columns)
-            """
-            #encoding categorical
-            gen_encoder = OneHotEncoder() #LabelEncoder()
-            eth_encoder = OneHotEncoder() #LabelEncoder()
-            ins_encoder = OneHotEncoder() #LabelEncoder()
-            age_encoder = OneHotEncoder() #LabelEncoder()
+                    file.write("Positive Samples: {:.2f} \n".format(y_train.sum()))
             
-            gen_encoder.fit(X_dataset[['gender']])
-            eth_encoder.fit(X_dataset[['ethnicity']])
-            ins_encoder.fit(X_dataset[['insurance']])
-            #age_encoder.fit(X_train['Age'])
-
+            indices_train_hids = []
             
-            gen = gen_encoder.transform(X_train[['gender']]).toarray()
-            eth = eth_encoder.transform(X_train[['ethnicity']]).toarray()
-            ins = ins_encoder.transform(X_train[['insurance']]).toarray()
-            #X_train['Age']=age_encoder.transform(X_train['Age'])
+            for id in train_hids:
+                index = total_hids.index(id)
+                indices_train_hids.append(index)
+
+            #print("indices_train_hids",indices_train_hids)    
+            X_train = X.iloc[indices_train_hids]
+       
             
-            # Encodage
-            gender_encoded = pd.DataFrame(gen, columns=gen_encoder.get_feature_names_out())
-            ethnicity_encoded = pd.DataFrame(eth, columns=eth_encoder.get_feature_names_out())
-            insurance_encoded = pd.DataFrame(ins, columns=ins_encoder.get_feature_names_out())
 
-            # Suppression des anciennes colonnes
-            X_train = X_train.drop(['gender', 'ethnicity', 'insurance'], axis=1)
-
-            # Concatenation des nouvelles colonnes encodées
-            X_train = X_train.reset_index(drop=True)  # Correction de l'index
-            X_train = pd.concat([X_train,gender_encoded, ethnicity_encoded, insurance_encoded],  axis=1)
-
-            # Affichage des premières lignes pour vérifier le résultat
-            #print("les données après l'encodage")	
-
-            #print(X_train)
-            #print(X_train.columns)
-
-
-            #print("affichage des données test avant l'encodage")
-            #print('test_hids',len(test_hids))
-            #Y_train.fillna(0, inplace=True)  # Remplacer les NaN par 0 dans Y_train
-            #print(X_test)
-
-            gen_test = gen_encoder.transform(X_test[['gender']]).toarray()
-            en_test = eth_encoder.transform(X_test[['ethnicity']]).toarray()
-            ins_test = ins_encoder.transform(X_test[['insurance']]).toarray()
-
-            # Encodage
-            gender_encoded = pd.DataFrame(gen_test, columns=gen_encoder.get_feature_names_out())
-            ethnicity_encoded = pd.DataFrame(en_test, columns=eth_encoder.get_feature_names_out())
-            insurance_encoded = pd.DataFrame(ins_test, columns=ins_encoder.get_feature_names_out())
-
-
-            # Suppression des anciennes colonnes
-            X_test = X_test.drop(['gender', 'ethnicity', 'insurance'], axis=1)
-
-            # Concatenation des nouvelles colonnes encodées
-            X_test = X_test.reset_index(drop=True)  # Correction de l'index
-            X_test = pd.concat([X_test, gender_encoded, ethnicity_encoded, insurance_encoded], axis=1)
-
-            # Affichage des premières lignes pour vérifier le résultat
-            #print('les données test après l encodeage  ')
-
-            #print(X_test)
-            #print(X_test.columns)
-            
-            #Y_test.fillna(0, inplace=True)  # Remplacer les NaN par 0 dans Y_train
-            #print(Y_test)
-            #print("just before training")
-            #print(X_test.head())"""
+            # Récupérer les noms des colonnes
             columns_list = X_test.columns.tolist()
             # Sauvegarder les colonnes dans un fichier CSV
-            output_path = os.path.join(os.environ['TMPDIR'], 'data2/output')
             pd.DataFrame(columns_list, columns=["Features"]).to_csv(os.path.join(output_path,'features.csv'), index=False)
-            self.train_model(X_train,Y_train,X_test,Y_test)
+
+
+            self.train_model(X_train,y_train,X_test,y_test)
     
     def train_model(self,X_train,Y_train,X_test,Y_test):
         #logits=[]
-        print("===============MODEL TRAINING===============")
+        print("===============MODEL TRAINING Random Forest===============")
         if self.model_type=='Gradient Bossting':
             model = HistGradientBoostingClassifier(categorical_features=[X_train.shape[1]-3,X_train.shape[1]-2,X_train.shape[1]-1]).fit(X_train, Y_train)
-            output_path = os.path.join(os.environ['TMPDIR'], 'data2/output')
-            joblib.dump(model, os.path.join(output_path,'trained_model.pkl'))
+            # Enregistrer le modèle entraîné
+            output_path =  os.path.join(os.environ['TMPDIR'], 'data2/output')
+            joblib.dump(model, os.path.join(output_path,'trained_model'f'{self.fold}.pkl'))
             prob=model.predict_proba(X_test)
             logits=np.log2(prob[:,1]/prob[:,0])
-            self.loss(prob[:,1],np.asarray(Y_test),logits,False,True)
+            self.loss(prob[:,1],np.asarray(Y_test),logits,False,True,self.fold)
             self.save_output(Y_test,prob[:,1],logits)
+            self.fold = self.fold +1
         
         elif self.model_type=='Logistic Regression':
             #X_train=pd.get_dummies(X_train,prefix=['gender','ethnicity','insurance'],columns=['gender','ethnicity','insurance'])
             #X_test=pd.get_dummies(X_test,prefix=['gender','ethnicity','insurance'],columns=['gender','ethnicity','insurance'])
             
             model = LogisticRegression().fit(X_train, Y_train) 
-            output_path = os.path.join(os.environ['TMPDIR'], 'data2/output')
-            joblib.dump(model, os.path.join(output_path,'trained_model.pkl'))
+            output_path =  os.path.join(os.environ['TMPDIR'], 'data2/output')
+            joblib.dump(model, os.path.join(output_path,'trained_model'+f'{self.fold}.pkl'))
             logits=model.predict_log_proba(X_test)
             prob=model.predict_proba(X_test)
-            self.loss(prob[:,1],np.asarray(Y_test),logits[:,1],False,True)
+            self.loss(prob[:,1],np.asarray(Y_test),logits[:,1],False,True,self.fold)
             self.save_outputImp(Y_test,prob[:,1],logits[:,1],model.coef_[0],X_train.columns)
+            self.fold = self.fold +1
+
         
         elif self.model_type=='Random Forest':
             #X_train=pd.get_dummies(X_train,prefix=['gender','ethnicity','insurance'],columns=['gender','ethnicity','insurance'])
             #X_test=pd.get_dummies(X_test,prefix=['gender','ethnicity','insurance'],columns=['gender','ethnicity','insurance'])
             model = RandomForestClassifier().fit(X_train, Y_train)
-            output_path = os.path.join(os.environ['TMPDIR'], 'data2/output')
-            joblib.dump(model, os.path.join(output_path,'trained_model.pkl'))
+            output_path =  os.path.join(os.environ['TMPDIR'], 'data2/output')
+            joblib.dump(model, os.path.join(output_path,'trained_model'+f'{self.fold}.pkl'))
             logits=model.predict_log_proba(X_test) 
             prob=model.predict_proba(X_test)
-            self.loss(prob[:,1],np.asarray(Y_test),logits[:,1],False,True)
+            self.loss(prob[:,1],np.asarray(Y_test),logits[:,1],False,True,self.fold)
             self.save_outputImp(Y_test,prob[:,1],logits[:,1],model.feature_importances_,X_train.columns)
+            self.fold = self.fold +1
+
         
         elif self.model_type=='Xgboost':
             #X_train=pd.get_dummies(X_train,prefix=['gender','ethnicity','insurance'],columns=['gender','ethnicity','insurance'])
             #X_test=pd.get_dummies(X_test,prefix=['gender','ethnicity','insurance'],columns=['gender','ethnicity','insurance'])
             model = xgb.XGBClassifier(objective="binary:logistic").fit(X_train, Y_train)
-            output_path = os.path.join(os.environ['TMPDIR'], 'data2/output')
-            joblib.dump(model, os.path.join(output_path,'trained_model.pkl'))
+            output_path =  os.path.join(os.environ['TMPDIR'], 'data2/output')
+            joblib.dump(model, os.path.join(output_path,'trained_model'+f'{self.fold}.pkl'))
             #logits=model.predict_log_proba(X_test)
             #print(self.test_data['ethnicity'])
             #print(self.test_data.shape)
             #print(self.test_data.head())
             prob=model.predict_proba(X_test)
             logits=np.log2(prob[:,1]/prob[:,0])
-            self.loss(prob[:,1],np.asarray(Y_test),logits,False,True)
+            self.loss(prob[:,1],np.asarray(Y_test),logits,False,True,self.fold)
             self.save_outputImp(Y_test,prob[:,1],logits,model.feature_importances_,X_train.columns)
+            self.fold = self.fold +1
+
 
 
     
@@ -376,10 +365,10 @@ class ML_models():
         output_df['gender']=list(self.test_data['gender'])
         output_df['age']=list(self.test_data['Age'])
         output_df['insurance']=list(self.test_data['insurance'])
-        output_path = os.path.join(os.environ['TMPDIR'], 'data2/output')
+        output_path= os.path.join(os.environ['TMPDIR'], 'data2/output') 
       
-        with open(os.path.join(output_path,'outputDict'), 'wb') as fp:
-               pickle.dump(output_df, fp)
+        with open(os.path.join(output_path,'outputDict'+f'{self.fold}'), 'wb') as fp:
+            pickle.dump(output_df, fp)
         
     
     def save_outputImp(self,labels,prob,logits,importance,features):
@@ -392,14 +381,14 @@ class ML_models():
         output_df['gender']=list(self.test_data['gender'])
         output_df['age']=list(self.test_data['Age'])
         output_df['insurance']=list(self.test_data['insurance'])
-        output_path = os.path.join(os.environ['TMPDIR'], 'data2/output')
-        with open(os.path.join(output_path,'outputDict'), 'wb') as fp:
-               pickle.dump(output_df, fp)
+        output_path= os.path.join(os.environ['TMPDIR'], 'data2/output') 
+        with open(os.path.join(output_path,'outputDict'+f'{self.fold}'), 'wb') as fp:
+            pickle.dump(output_df, fp)
         
         imp_df=pd.DataFrame()
         imp_df['imp']=importance
         imp_df['feature']=features
-        imp_df.to_csv(os.path.join(output_path,'feature_importance.csv'), index=False)
+        imp_df.to_csv(os.path.join(output_path,'feature_importance'+f'{self.fold}.csv'), index=False)
                 
                 
 

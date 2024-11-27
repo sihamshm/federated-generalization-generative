@@ -34,7 +34,7 @@ class Loss(nn.Module):
         self.callb=callb
         self.callbPlot=callbPlot
 
-    def forward(self, prob, labels,logits, train=True, standalone=False):
+    def forward(self, prob, labels,logits, train=True, standalone=False,fold=0):
         classify_loss='NA' 
         auc,apr='NA'
         base='NA'
@@ -97,7 +97,7 @@ class Loss(nn.Module):
             fpr, tpr, threshholds = metrics.roc_curve(labels, prob)
             auc = metrics.auc(fpr, tpr)
         if(self.aurocPlot):
-            self.auroc_plot(labels, prob)
+            self.auroc_plot(labels, prob,fold)
         
         #################           AUPRC            #######################
         if(self.auprc):
@@ -141,24 +141,11 @@ class Loss(nn.Module):
         #################           Callibration         #######################
         if(self.callb):
             if(self.callbPlot):
-                ECE, MCE = self.calb_metrics(prob,labels,True)
+                ECE, MCE = self.calb_metrics(prob,labels,True,fold)
             else:
-                ECE, MCE = self.calb_metrics(prob,labels,False)
+                ECE, MCE = self.calb_metrics(prob,labels,False,fold)
         
         #################           Fairness         #######################
-        
-        
-        #print("BCE Loss: {:.2f}".format(classify_loss))
-        #print("AU-ROC: {:.2f}".format(auc))
-        #print("AU-PRC: {:.2f}".format(apr))
-        #print("AU-PRC Baaseline: {:.2f}".format(base))
-        #print("Accuracy: {:.2f}".format(accur))
-        #print("Precision: {:.2f}".format(prec))
-        #print("Recall: {:.2f}".format(recall))
-        #print("Specificity: {:.2f}".format(spec))
-        #print("NPV: {:.2f}".format(npv_val))
-        #print("ECE: {:.2f}".format(ECE))
-        #print("MCE: {:.2f}".format(MCE))
         output_path = os.path.join(os.environ['TMPDIR'], 'data4/output')
         with open(os.path.join(output_path,"model_results.txt"), "a") as file:
             file.write("========================================")
@@ -173,10 +160,11 @@ class Loss(nn.Module):
             file.write("NPV: {:.2f}\n".format(npv_val))
             file.write("ECE: {:.2f}\n".format(ECE))
             file.write("MCE: {:.2f}\n".format(MCE))
+        
         #return [classify_loss, auc,apr,base,accur,prec,recall,spec,npv_val,ECE,MCE]
     
 
-    def auroc_plot(self,label, pred):
+    def auroc_plot(self,label, pred,fold):
         plt.figure(figsize=(8,6))
         plt.plot([0, 1], [0, 1],'r--')
 
@@ -191,10 +179,11 @@ class Loss(nn.Module):
         plt.title("AUC-ROC")
         plt.legend()
         output_path = os.path.join(os.environ['TMPDIR'], 'data4/output')
-        plt.savefig(output_path+"auroc_plot.png")
+        plt.savefig(output_path+"auroc_plot"+f"{fold}.png")
+
         #plt.show()
         
-    def calb_curve(self,bins,bin_accs,ECE, MCE):
+    def calb_curve(self,bins,bin_accs,ECE, MCE,fold):
         import matplotlib.patches as mpatches
 
         fig = plt.figure(figsize=(8, 8))
@@ -227,7 +216,7 @@ class Loss(nn.Module):
         MCE_patch = mpatches.Patch(color='red', label='MCE = {:.2f}%'.format(MCE*100))
         plt.legend(handles=[ECE_patch, MCE_patch])
         output_path = os.path.join(os.environ['TMPDIR'], 'data4/output')
-        plt.savefig(output_path+"callibration_plot.png")
+        plt.savefig(output_path+"callibration_plot"+f"{fold}.png")
         #plt.show()
         
     def calb_bins(self,preds,labels):
@@ -250,7 +239,7 @@ class Loss(nn.Module):
         return bins, binned, bin_accs, bin_confs, bin_sizes
 
 
-    def calb_metrics(self,preds,labels,curve):
+    def calb_metrics(self,preds,labels,curve,fold):
         ECE = 0
         MCE = 0
         bins, _, bin_accs, bin_confs, bin_sizes = self.calb_bins(preds,labels)
@@ -260,7 +249,7 @@ class Loss(nn.Module):
             ECE += (bin_sizes[i] / sum(bin_sizes)) * abs_conf_dif
             MCE = max(MCE, abs_conf_dif)
         if curve:
-            self.calb_curve(bins,bin_accs,ECE, MCE)
+            self.calb_curve(bins,bin_accs,ECE, MCE,fold)
         return ECE, MCE
 
 
