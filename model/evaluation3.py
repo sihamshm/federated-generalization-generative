@@ -12,7 +12,7 @@ import numpy as np
 from collections import defaultdict
 import sys
 from pathlib import Path
-sys.path.append(os.path.join(os.environ['TMPDIR'], 'data/output'))
+sys.path.append(os.path.join(os.environ['TMPDIR'], 'data3/output'))
 
 
     
@@ -159,7 +159,7 @@ class Loss(nn.Module):
         #print("NPV: {:.2f}".format(npv_val))
         #print("ECE: {:.2f}".format(ECE))
         #print("MCE: {:.2f}".format(MCE))
-        output_path = os.path.join(os.environ['TMPDIR'], 'data/output')
+        output_path = os.path.join(os.environ['TMPDIR'], 'data3/output')
         with open(os.path.join(output_path,"model_results.txt"), "w") as file:
             file.write("BCE Loss: {:.2f}\n".format(classify_loss))
             file.write("AU-ROC: {:.2f}\n".format(auc))
@@ -189,7 +189,7 @@ class Loss(nn.Module):
         plt.xlabel("False Positive Rate")
         plt.title("AUC-ROC")
         plt.legend()
-        output_path = os.path.join(os.environ['TMPDIR'], 'data/output')
+        output_path = os.path.join(os.environ['TMPDIR'], 'data3/output')
         plt.savefig(output_path+"auroc_plot.png")
         #plt.show()
         
@@ -225,7 +225,7 @@ class Loss(nn.Module):
         ECE_patch = mpatches.Patch(color='green', label='ECE = {:.2f}%'.format(ECE*100))
         MCE_patch = mpatches.Patch(color='red', label='MCE = {:.2f}%'.format(MCE*100))
         plt.legend(handles=[ECE_patch, MCE_patch])
-        output_path = os.path.join(os.environ['TMPDIR'], 'data/output')
+        output_path = os.path.join(os.environ['TMPDIR'], 'data3/output')
         plt.savefig(output_path+"callibration_plot.png")
         #plt.show()
         

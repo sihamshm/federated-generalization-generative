@@ -7,7 +7,7 @@ import os
 import importlib
 import sys
 import numpy as np
-import evaluation
+import evaluation2
 import joblib
 from sklearn.model_selection import KFold
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
@@ -20,14 +20,13 @@ from sklearn.ensemble import HistGradientBoostingClassifier
 
 from imblearn.over_sampling import RandomOverSampler
 from sklearn.metrics import classification_report
-
 #sys.path.append(os.path.dirname(os.path.abspath(__file__)) + './../..')
 sys.path.append(os.path.join(os.environ['TMPDIR'], 'mimic'))
-sys.path.append(os.path.join(os.environ['TMPDIR'], 'data/output'))
+sys.path.append(os.path.join(os.environ['TMPDIR'], 'data2/output'))
 
 
-importlib.reload(evaluation)
-import evaluation
+importlib.reload(evaluation2)
+import evaluation2
 # MAX_LEN=12
 # MAX_COND_SEQ=56
 # MAX_PROC_SEQ=40
@@ -43,7 +42,7 @@ class ML_models():
         self.model_type=model_type
         self.concat=concat
         self.oversampling=oversampling
-        self.loss=evaluation.Loss('cpu',True,True,True,True,True,True,True,True,True,True,True)
+        self.loss=evaluation2.Loss('cpu',True,True,True,True,True,True,True,True,True,True,True)
         self.ml_train()
     def create_kfolds(self):
         labels_path = os.path.join(os.environ['TMPDIR'], 'mimic/data/csv/labels.csv')
@@ -194,8 +193,7 @@ class ML_models():
         print("===============MODEL TRAINING===============")
         if self.model_type=='Gradient Bossting':
             model = HistGradientBoostingClassifier(categorical_features=[X_train.shape[1]-3,X_train.shape[1]-2,X_train.shape[1]-1]).fit(X_train, Y_train)
-            # Enregistrer le modèle entraîné
-            output_path = os.path.join(os.environ['TMPDIR'], 'data/output')
+            output_path = os.path.join(os.environ['TMPDIR'], 'data2/output')
             joblib.dump(model, os.path.join(output_path,'trained_model.pkl'))
             prob=model.predict_proba(X_test)
             logits=np.log2(prob[:,1]/prob[:,0])
@@ -207,7 +205,7 @@ class ML_models():
             #X_test=pd.get_dummies(X_test,prefix=['gender','ethnicity','insurance'],columns=['gender','ethnicity','insurance'])
             
             model = LogisticRegression().fit(X_train, Y_train) 
-            output_path = os.path.join(os.environ['TMPDIR'], 'data/output')
+            output_path = os.path.join(os.environ['TMPDIR'], 'data2/output')
             joblib.dump(model, os.path.join(output_path,'trained_model.pkl'))
             logits=model.predict_log_proba(X_test)
             prob=model.predict_proba(X_test)
@@ -218,6 +216,8 @@ class ML_models():
             #X_train=pd.get_dummies(X_train,prefix=['gender','ethnicity','insurance'],columns=['gender','ethnicity','insurance'])
             #X_test=pd.get_dummies(X_test,prefix=['gender','ethnicity','insurance'],columns=['gender','ethnicity','insurance'])
             model = RandomForestClassifier().fit(X_train, Y_train)
+            output_path = os.path.join(os.environ['TMPDIR'], 'data2/output')
+            joblib.dump(model, os.path.join(output_path,'trained_model.pkl'))
             logits=model.predict_log_proba(X_test) 
             prob=model.predict_proba(X_test)
             self.loss(prob[:,1],np.asarray(Y_test),logits[:,1],False,True)
@@ -227,7 +227,7 @@ class ML_models():
             #X_train=pd.get_dummies(X_train,prefix=['gender','ethnicity','insurance'],columns=['gender','ethnicity','insurance'])
             #X_test=pd.get_dummies(X_test,prefix=['gender','ethnicity','insurance'],columns=['gender','ethnicity','insurance'])
             model = xgb.XGBClassifier(objective="binary:logistic").fit(X_train, Y_train)
-            output_path = os.path.join(os.environ['TMPDIR'], 'data/output')
+            output_path = os.path.join(os.environ['TMPDIR'], 'data2/output')
             joblib.dump(model, os.path.join(output_path,'trained_model.pkl'))
             #logits=model.predict_log_proba(X_test)
             #print(self.test_data['ethnicity'])
@@ -331,7 +331,7 @@ class ML_models():
         output_df['gender']=list(self.test_data['gender'])
         output_df['age']=list(self.test_data['Age'])
         output_df['insurance']=list(self.test_data['insurance'])
-        output_path = os.path.join(os.environ['TMPDIR'], 'data/output')
+        output_path = os.path.join(os.environ['TMPDIR'], 'data2/output')
       
         with open(os.path.join(output_path,'outputDict'), 'wb') as fp:
                pickle.dump(output_df, fp)
@@ -347,7 +347,7 @@ class ML_models():
         output_df['gender']=list(self.test_data['gender'])
         output_df['age']=list(self.test_data['Age'])
         output_df['insurance']=list(self.test_data['insurance'])
-        output_path = os.path.join(os.environ['TMPDIR'], 'data/output')
+        output_path = os.path.join(os.environ['TMPDIR'], 'data2/output')
         with open(os.path.join(output_path,'outputDict'), 'wb') as fp:
                pickle.dump(output_df, fp)
         
