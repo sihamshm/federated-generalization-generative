@@ -160,7 +160,8 @@ class Loss(nn.Module):
         #print("ECE: {:.2f}".format(ECE))
         #print("MCE: {:.2f}".format(MCE))
         output_path = os.path.join(os.environ['TMPDIR'], 'data2/output')
-        with open(os.path.join(output_path,"model_results.txt"), "w") as file:
+        with open(os.path.join(output_path,"model_results.txt"), "a") as file:
+            file.write("========================================")
             file.write("BCE Loss: {:.2f}\n".format(classify_loss))
             file.write("AU-ROC: {:.2f}\n".format(auc))
             file.write("AU-PRC: {:.2f}\n".format(apr))

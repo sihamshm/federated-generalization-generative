@@ -55,9 +55,14 @@ class ML_models():
             k_fold=self.k_fold
         hids=labels.iloc[:,0]
         y=labels.iloc[:,1]
-        print("Total Samples",len(hids))
-        print("Positive Samples",y.sum())
+        #print("Total Samples",len(hids))
+        #print("Positive Samples",y.sum())
         #print(len(hids))
+        output_path= os.path.join(os.environ['TMPDIR'], 'data3/output')
+        with open(os.path.join(output_path,"model_results.txt"), "a") as file:
+            file.write("Total Samples: {:.2f} \n".format(len(hids)))
+            file.write("Positive Samples: {:.2f} \n".format(y.sum()))
+        """
         if self.oversampling:
             print("=============OVERSAMPLING===============")
             oversample = RandomOverSampler(sampling_strategy='minority')
@@ -67,7 +72,7 @@ class ML_models():
             hids=hids[:,0]
             print("Total Samples",len(hids))
             print("Positive Samples",y.sum())
-        
+        """
         ids=range(0,len(hids))
         batch_size=int(len(ids)/k_fold)
         k_hids=[]
@@ -88,7 +93,7 @@ class ML_models():
         for i in range(self.k_fold):
             print("==================={0:2d} FOLD=====================".format(i))
             test_hids=k_hids[i]
-            train_ids=list(set([0,1,2,3,4])-set([i]))
+            train_ids=list(set([0,1,2])-set([i]))
             train_hids=[]
             for j in train_ids:
                 train_hids.extend(k_hids[j])                    
@@ -105,10 +110,44 @@ class ML_models():
                     cols_t = [x + "_"+str(t) for x in cols]
 
                     concat_cols.extend(cols_t)
-            print('train_hids',len(train_hids))
+            #print('train_hids',len(train_hids))
 
             X_test,Y_test=self.getXY(test_hids,labels,concat_cols)
-            self.test_data=X_test.copy(deep=True)
+            
+            #récupérer les données X_test1 de demo1
+            X_test1 = pd.DataFrame()
+            demo_path = os.path.join(os.environ['TMPDIR'], 'mimic/data/csv/')
+            for sample in test_hids:
+                demo=pd.read_csv(demo_path+str(sample)+'/demo1.csv',header=0)
+                if X_test1.empty:
+                    X_test1=pd.concat([X_test1,demo],axis=1)
+                else:
+                    X_test1=pd.concat([X_test1,demo],axis=0)
+            
+            self.test_data=X_test1.copy(deep=True)
+
+            labels_hids = labels[labels['stay_id'].isin(train_hids)]
+            y_hids = labels_hids.iloc[:,1]
+            #y_hids.fillna(0, inplace=True)  # Remplacer les NaN par 0 dans Y_train
+
+            output_path= os.path.join(os.environ['TMPDIR'], 'data3/output')
+            with open(os.path.join(output_path,"model_results.txt"), "a") as file:
+                file.write("==================={0:2d} FOLD=====================\n".format(i))
+                file.write("Positive sample of train dataset :{:.2f}  \n ".format(y_hids.sum()))
+                file.write('train_hids:{:.2f} \n'.format(len(train_hids)))
+                file.write('test_hids: {:.2f} \n'.format(len(test_hids)))
+   
+            if self.oversampling:
+                #print("=============OVERSAMPLING===============")
+                oversample = RandomOverSampler(sampling_strategy='minority')
+                train_hids=np.asarray(train_hids).reshape(-1,1)
+                train_hids, y_hids = oversample.fit_resample(train_hids, y_hids)
+                train_hids=train_hids[:,0]
+                with open(os.path.join(output_path,"model_results.txt"), "a") as file:
+                    file.write("=============OVERSAMPLING=============== \n")
+                    file.write("Total Samples: {:.2f} \n".format(len(train_hids)))
+                    file.write("Positive Samples: {:.2f} \n".format(y_hids.sum()))
+
             
             X_train,Y_train=self.getXY(train_hids,labels,concat_cols)
             X_dataset = pd.concat([X_train, X_test], axis=0, ignore_index=True)
@@ -117,7 +156,7 @@ class ML_models():
             #print('les données gender X_train avant l encodage:')
             #print(X_train)
             #print(X_train.columns)
-            
+            """
             #encoding categorical
             gen_encoder = OneHotEncoder() #LabelEncoder()
             eth_encoder = OneHotEncoder() #LabelEncoder()
@@ -185,7 +224,11 @@ class ML_models():
             #Y_test.fillna(0, inplace=True)  # Remplacer les NaN par 0 dans Y_train
             #print(Y_test)
             #print("just before training")
-            #print(X_test.head())
+            #print(X_test.head())"""
+            columns_list = X_test.columns.tolist()
+            # Sauvegarder les colonnes dans un fichier CSV
+            output_path = os.path.join(os.environ['TMPDIR'], 'data3/output')
+            pd.DataFrame(columns_list, columns=["Features"]).to_csv(os.path.join(output_path,'features.csv'), index=False)
             self.train_model(X_train,Y_train,X_test,Y_test)
     
     def train_model(self,X_train,Y_train,X_test,Y_test):
