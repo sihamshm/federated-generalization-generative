@@ -13,6 +13,10 @@ Le manque de données a un impact négatif sur la performance des modèles de cl
 [4] : l’entraînement sur des petits jeux de données peut mener au sur-apprentissage, ce qui nuit
 à la précision et à la capacité de généralisation des modèles sur de nouvelles données n’ayant
 pas servi à l’apprentissage.
+
+
+
+
 I.2 Objectives
 L’objectif de ce projet est d’explorer le potentiel des stratégies d’augmentation de données
 pour améliorer la généralisation du modèle en apprentissage fédéré tout en respectant la confi-
