@@ -26,3 +26,17 @@ L’objectif de ce projet est d’explorer le potentiel des stratégies d’augm
 pour améliorer la généralisation du modèle en apprentissage fédéré tout en respectant la confi-
 dentialité des données. Cela nécessite la génération des données synthétiques à partir des
 données réelles provenant des différents sites où le partage de données réelles est impossible.
+
+
+
+Les étapes que j'ai suivi:
+
+1- le traitement des données 
+2- Entraînement des modèles 
+3- Test des modèles sur les données des différents sites
+4- federated learning Logistic Regression
+5- federated leanting Xgboost
+6- Génération des données sythétiques en utilisant RealTabFormer 
+7- Entraînement des modèles sur les données sythétiques
+8- Test des modèles entraîné sur les données sythétiques
+
