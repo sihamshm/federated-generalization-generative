@@ -13,7 +13,7 @@ from ml_models2 import*
 
 if __name__ == "__main__":
     data_icu = "ICU"
-    cv= 0 # int(5) int(10) cross-validation 5 or 10 fold validation
+    cv= int(3) # int(5) int(10) cross-validation 5 or 10 fold validation
     concat = 'Conactenate'
     oversampling = 'True'
     model = 'Random Forest'  #'Logistic Regression','Random Forest','Gradient Bossting','Xgboost'
