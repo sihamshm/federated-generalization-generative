@@ -1,5 +1,7 @@
 # projet-d-essai
 .1 Problématique
+
+
 La classification des données biomédicales à ressources limitées est un défi important pour l’IA
 dans le domaine de la santé [1; 2]. Ce défi se manifeste lorsque les ressources disponibles pour
 entraîner les modèles sont limitées, principalement en raison de deux facteurs :
@@ -18,6 +20,8 @@ pas servi à l’apprentissage.
 
 
 I.2 Objectives
+
+
 L’objectif de ce projet est d’explorer le potentiel des stratégies d’augmentation de données
 pour améliorer la généralisation du modèle en apprentissage fédéré tout en respectant la confi-
 dentialité des données. Cela nécessite la génération des données synthétiques à partir des
