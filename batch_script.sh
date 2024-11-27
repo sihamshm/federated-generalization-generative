@@ -5,8 +5,8 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=4
 #SBATCH --gpus-per-node=1
-#SBATCH --mem-per-cpu=8000M
-#SBATCH --time=04:00:00
+#SBATCH --mem-per-cpu=5000M
+#SBATCH --time=01:00:00
 #SBATCH --mail-user=siham.si-hadj-mohand@sres.ulaval.ca
 #SBATCH --mail-type=ALL
 # ici on load les modules de compute canada dont on a besoin
