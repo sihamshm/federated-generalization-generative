@@ -1,42 +1,96 @@
-# projet-d-essai
-I.1 Problématique
+# 🧠 Évaluation du potentiel des techniques génératives pour améliorer la généralisation en apprentissage fédéré
+
+Ce projet explore le potentiel des **stratégies d’augmentation de données génératives** pour améliorer la généralisation des modèles en **apprentissage fédéré**, tout en respectant la confidentialité des données.  
+
+Dans ce contexte, des **données synthétiques** sont générées localement à partir de données réelles, sans partage direct entre les sites participants.
+
+---
+
+## 🏥 Données utilisées
+
+Les expériences ont été menées à partir du module **ICU** de la base de données **MIMIC-IV**, segmenté en cinq cohortes correspondant à différentes pathologies :
+
+- 🫀 Insuffisance cardiaque
+- 🧽 Maladie rénale chronique (CKD)
+- 🫁 Maladie pulmonaire obstructive chronique (COPD)
+- ❤️ Maladie coronarienne (CAD)
+- 🔬 Autres maladies (non incluses dans l’étude)
+
+Ces cohortes sont supposées réparties entre **quatre hôpitaux**, chacun hébergeant localement les données d’une maladie spécifique.
+
+---
+
+## 📁 Structure du projet
+
+- `data/` : Données simulées ou réelles (non incluses)
+- `notebooks/` : Notebooks Jupyter pour exploration, modélisation et résultats
+- `scripts/` : Scripts pour le traitement, fédération et génération de données
+- `results/` : Graphiques, matrices de confusion, scores des modèles
+
+---
+
+## 🎯 Objectifs
+
+1. Prétraitement et nettoyage des données
+2. Entraînement de modèles classiques localement
+3. Évaluation croisée entre les sites
+4. Implémentation de l’apprentissage fédéré avec :
+   - Régression logistique fédérée
+   - XGBoost fédéré
+5. Génération de données synthétiques avec **RealTabFormer**
+6. Réentraînement des modèles sur données synthétiques
+7. Évaluation des performances généralisées
+
+---
+
+## 🧪 Modèles explorés
+
+| Type                       | Modèle                       |
+|----------------------------|------------------------------|
+| Classique                  | Régression Logistique        |
+|                            | Random Forest                |
+|                            | XGBoost                      |
+|                            | Gradient Boosting            |
+| Apprentissage fédéré       | Régression Logistique fédérée |
+|                            | XGBoost fédéré               |
+| Génératif (augmentation)   | RealTabFormer                |
+
+---
+
+## 🔍 Résultats
+
+Les résultats comparent les performances :
+- des modèles **entraînés localement**
+- des modèles **entraînés via FL**
+- des modèles **entraînés sur données synthétiques**
+
+Les métriques incluent :
+- AU-ROC
+- AU-PRC
+- Accuracy
 
 
-La classification des données biomédicales à ressources limitées est un défi important pour l’IA
-dans le domaine de la santé [1; 2]. Ce défi se manifeste lorsque les ressources disponibles pour
-entraîner les modèles sont limitées, principalement en raison de deux facteurs :
--Manque de données [2] : Les données biomédicales sont souvent disponibles en quantités
-limitées, par exemple dans des groupes démographiques spécifiques ou pour des conditions
-médicales moins courantes.
--Problèmes de confidentialité [3] : Les données biomédicales sont sensibles et soumises à des
-réglementations strictes en matière de confidentialité, ce qui limite la possibilité de les partager
-et de les utiliser pour l’apprentissage automatique.
-Le manque de données a un impact négatif sur la performance des modèles de classification
-[4] : l’entraînement sur des petits jeux de données peut mener au sur-apprentissage, ce qui nuit
-à la précision et à la capacité de généralisation des modèles sur de nouvelles données n’ayant
-pas servi à l’apprentissage.
+---
 
+## 💡 Perspectives
 
+- Étendre à d’autres générateurs (CTGAN, TVAE…)
+- Étudier l’impact de l’augmentation sur des sites faiblement représentés
+- Intégrer la détection de biais dans les données générées
 
+---
 
-I.2 Objectives
+## 👩‍💻 Auteur
 
+**Ton Prénom NOM**  
+Étudiante en génie électrique · Passionnée par l’IA, le fédéré et les données médicales  
+[LinkedIn](https://linkedin.com/in/tonprofil) | [Email](mailto:ton@email.com)
 
-L’objectif de ce projet est d’explorer le potentiel des stratégies d’augmentation de données
-pour améliorer la généralisation du modèle en apprentissage fédéré tout en respectant la confi-
-dentialité des données. Cela nécessite la génération des données synthétiques à partir des
-données réelles provenant des différents sites où le partage de données réelles est impossible.
+---
 
+## 📚 Références
 
-
-Les étapes que j'ai suivi:
-
-1- le traitement des données 
-2- Entraînement des modèles 
-3- Test des modèles sur les données des différents sites
-4- federated learning Logistic Regression
-5- federated leanting Xgboost
-6- Génération des données sythétiques en utilisant RealTabFormer 
-7- Entraînement des modèles sur les données sythétiques
-8- Test des modèles entraîné sur les données sythétiques
+- MIMIC-IV ICU : [https://physionet.org/content/mimiciv/](https://physionet.org/content/mimiciv/)
+- RealTabFormer : [Article officiel ou GitHub du modèle]
+- [15] Référence du pipeline de traitement utilisé (à compléter)
 
