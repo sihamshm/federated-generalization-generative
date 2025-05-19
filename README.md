@@ -25,7 +25,7 @@ Ces cohortes sont supposées réparties entre **quatre hôpitaux**, chacun hébe
 - `data/` : Données simulées ou réelles (non incluses)
 - `notebooks/` : Notebooks Jupyter pour exploration, modélisation et résultats
 - `scripts/` : Scripts pour le traitement, fédération et génération de données
-- `results/` : Graphiques, matrices de confusion, scores des modèles
+- `results/` : Graphiques, scores des modèles
 
 ---
 
@@ -82,15 +82,21 @@ Les métriques incluent :
 
 ## 👩‍💻 Auteur
 
-**Ton Prénom NOM**  
-Étudiante en génie électrique · Passionnée par l’IA, le fédéré et les données médicales  
-[LinkedIn](https://linkedin.com/in/tonprofil) | [Email](mailto:ton@email.com)
+**Siham Si Hadj Mohand**  
+Étudiante en génie électrique · Passionnée par l’IA, l'apprentissage fédéré et les données médicales  
+[LinkedIn](www.linkedin.com/in/siham-s) | [Email](siham.sihadj@gmail.com)
 
 ---
 
 ## 📚 Références
 
-- MIMIC-IV ICU : [https://physionet.org/content/mimiciv/](https://physionet.org/content/mimiciv/)
-- RealTabFormer : [Article officiel ou GitHub du modèle]
-- [15] Référence du pipeline de traitement utilisé (à compléter)
+- **MIMIC-IV ICU** : [https://physionet.org/content/mimiciv/](https://physionet.org/content/mimiciv/)
+- **RealTabFormer** :  
+  A. V. Solatorio and O. Dupriez, _“REaLTabFormer: Generating realistic relational and tabular data using transformers,”_  
+  *arXiv preprint* [arXiv:2302.02041](https://arxiv.org/abs/2302.02041), 2023.
+- **Pipeline de traitement utilisé** :  
+  M. Gupta, B. M. Gallamoza, N. Cutrona, P. Dhakal, R. Poulain, and R. Beheshti,  
+  _“An extensive data processing pipeline for MIMIC-IV,”_  
+  in *Proceedings of the 2nd Machine Learning for Health Symposium*, PMLR, Vol. 193, 2022, pp. 311–325.
+
 
