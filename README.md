@@ -72,13 +72,6 @@ Les métriques incluent :
 
 ---
 
-## 💡 Perspectives
-
-- Étendre à d’autres générateurs (CTGAN, TVAE…)
-- Étudier l’impact de l’augmentation sur des sites faiblement représentés
-- Intégrer la détection de biais dans les données générées
-
----
 
 ## 👩‍💻 Auteur
 
