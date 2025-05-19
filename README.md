@@ -76,7 +76,7 @@ Les métriques incluent :
 ## 👩‍💻 Auteur
 
 **Siham Si Hadj Mohand**  
-Étudiante en génie électrique · Passionnée par l’IA, l'apprentissage fédéré et les données médicales  
+Maîtrise en génie électrique · Passionnée par l’IA, l'apprentissage fédéré et les données médicales  
 [LinkedIn](www.linkedin.com/in/siham-s) | [Email](siham.sihadj@gmail.com)
 
 ---
