@@ -67,7 +67,6 @@ Les résultats comparent les performances :
 Les métriques incluent :
 - AU-ROC
 - AU-PRC
-- Accuracy
 
 
 ---
