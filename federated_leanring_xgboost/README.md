@@ -1,5 +1,5 @@
-Ce dossier contient du code provenant du projet [https://github.com/adap/flower/tree/main/examples/xgboost-quickstart](https://github.com/adap/flower/tree/main/examples/xgboost-quickstart),
-utilisé tel quel sans modification. Licence d’origine : Apache License 2.0.
+This folder contains code from the project https://github.com/adap/flower/tree/main/examples/xgboost-quickstart,
+used as-is without modification. Original license: Apache License 2.0.
 
 ---
 tags: [quickstart, classification, tabular]
