@@ -10,8 +10,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---
 
-This project includes code from the MIMIC-IV Data Pipeline project, available at:
-https://github.com/healthylaife/MIMIC-IV-Data-Pipeline
-Original code copyright (C) 2023 healthy lAife lab
-Licensed under the MIT License.
+
+This project includes code from the following external sources:
+
+- **MIMIC-IV Data Pipeline**  
+  Repository: [https://github.com/healthylaife/MIMIC-IV-Data-Pipeline](https://github.com/healthylaife/MIMIC-IV-Data-Pipeline)  
+  Copyright © 2023 Healthy LAife Lab  
+  Licensed under the MIT License.
+
+- **REaLTabFormer**  
+  Repository: [https://github.com/worldbank/REaLTabFormer](https://github.com/worldbank/REaLTabFormer)  
+  Copyright © 2023 The World Bank  
+  Licensed under the MIT License.
 
