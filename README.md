@@ -84,7 +84,9 @@ Maîtrise en génie électrique · Passionnée par l’IA, l'apprentissage féd�
 ## 📚 Références
 
 - **MIMIC-IV ICU** : [https://physionet.org/content/mimiciv/](https://physionet.org/content/mimiciv/)
-- **RealTabFormer** :  
+- **RealTabFormer** :
+  [https://github.com/worldbank/REaLTabFormer](https://github.com/worldbank/REaLTabFormer)
+  
   A. V. Solatorio and O. Dupriez, _“REaLTabFormer: Generating realistic relational and tabular data using transformers,”_  
   *arXiv preprint* [arXiv:2302.02041](https://arxiv.org/abs/2302.02041), 2023.
 - **Pipeline de traitement utilisé** :  
