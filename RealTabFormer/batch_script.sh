@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --account=def-adurand #rrg-adurand
+#SBATCH --account=def-xxx #
 #SBATCH --output=/scratch/siham/slurm_%j.out  # Fichier de sortie dans le répertoire scratch
 #SBATCH --error=/scratch/siham/mon_job_%j.err   # Fichier d'erreurs dans le répertoire scratch
 #SBATCH --ntasks-per-node=1
@@ -7,7 +7,7 @@
 #SBATCH --gpus-per-node=1
 #SBATCH --mem-per-cpu=10000M
 #SBATCH --time=03:00:00
-#SBATCH --mail-user=siham.si-hadj-mohand@sres.ulaval.ca
+#SBATCH --mail-user=xxxxxxxxxxxxxxxxxxxxxxx
 #SBATCH --mail-type=ALL
 # ici on load les modules de compute canada dont on a besoin
 module --force purge
