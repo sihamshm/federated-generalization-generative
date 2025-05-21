@@ -22,4 +22,13 @@ This project includes code from the following external sources:
   Repository: [https://github.com/worldbank/REaLTabFormer](https://github.com/worldbank/REaLTabFormer)  
   Copyright © 2023 The World Bank  
   Licensed under the MIT License.
+  
+- **Federated XGBoost (FATE)**  
+  Documentation : [https://flower.ai/blog/2024-02-14-federated-xgboost-with-flower/](https://flower.ai/blog/2024-02-14-federated-xgboost-with-flower/)  
+  Dépôt : [https://github.com/adap/flower/tree/main/examples/xgboost-quickstart](https://github.com/adap/flower/tree/main/examples/xgboost-quickstart)  
+  Licence : Apache License 2.0
+
+- **FATE Logistic Regression**  
+  Documentation : [https://fate.readthedocs.io/en/develop/_build_temp/python/federatedml/linear_model/logistic_regression/README.html](https://fate.readthedocs.io/en/develop/_build_temp/python/federatedml/linear_model/logistic_regression/README.html)  
+  Licence : Apache License 2.0
 
