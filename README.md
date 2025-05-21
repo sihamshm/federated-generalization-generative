@@ -94,6 +94,20 @@ Master’s in Electrical Engineering · Passionate about AI, Data Science, and E
   _“An extensive data processing pipeline for MIMIC-IV,”_  
   In *Proceedings of the 2nd Machine Learning for Health Symposium*, PMLR, Vol. 193, 2022, pp. 311–325.
 
+- **federated XGBoost (Flower)**
+  
+   Documentation: https://flower.ai/blog/2024-02-14-federated-xgboost-with-flower/
+  
+   Repository: https://github.com/adap/flower/tree/main/examples/xgboost-quickstart
+
+- **federated Logistic Regression**
+  
+   Documentation: https://fate.readthedocs.io/en/develop/_build_temp/python/federatedml/linear_model/logistic_regression/README.html
+  
+   Repository: https://github.com/adap/flower/tree/main/examples/sklearn-logreg-mnist
+
+  
+
 # 🧠 Évaluation du potentiel des techniques génératives pour améliorer la généralisation en apprentissage fédéré
 
 Ce projet explore le potentiel des **stratégies d’augmentation de données génératives** pour améliorer la généralisation des modèles en **apprentissage fédéré**, tout en respectant la confidentialité des données.  
@@ -188,5 +202,17 @@ Maîtrise en génie électrique · Passionnée par l’IA, la science des donné
   M. Gupta, B. M. Gallamoza, N. Cutrona, P. Dhakal, R. Poulain, and R. Beheshti,  
   _“An extensive data processing pipeline for MIMIC-IV,”_  
   in *Proceedings of the 2nd Machine Learning for Health Symposium*, PMLR, Vol. 193, 2022, pp. 311–325.
+
+- **federated XGBoost (Flower)**
+  
+   Documentation: https://flower.ai/blog/2024-02-14-federated-xgboost-with-flower/
+  
+   Repository: https://github.com/adap/flower/tree/main/examples/xgboost-quickstart
+
+- **federated Logistic Regression**
+  
+   Documentation: https://fate.readthedocs.io/en/develop/_build_temp/python/federatedml/linear_model/logistic_regression/README.html
+  
+   Repository: https://github.com/adap/flower/tree/main/examples/sklearn-logreg-mnist
 
 
