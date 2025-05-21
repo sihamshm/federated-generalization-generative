@@ -25,7 +25,7 @@ X, y = dt.access()
 X = X.reset_index(drop=True)
 y = y.reset_index(drop=True)
 
-df = pd.concat([X.iloc[:10,:], y.iloc[:10]], axis=1)
+df = pd.concat([X.iloc[:,:], y.iloc[:]], axis=1)
 #path_data=os.path.join(os.environ['TMPDIR'], 'mimic/data/')
 
 #df = pd.read_csv(path_data+"test_table.csv")
