@@ -1,3 +1,99 @@
+# 🧠 Evaluating the Potential of Generative Techniques to Improve Generalization in Federated Learning
+
+This project explores the potential of **generative data augmentation strategies** to improve model generalization in **federated learning**, while preserving data privacy.  
+
+In this context, **synthetic data** is generated locally from real data, without direct sharing between participating sites.
+
+---
+
+## 🏥 Data Used
+
+Experiments were conducted using the **ICU module** of the **MIMIC-IV** database, segmented into five cohorts corresponding to different medical conditions:
+
+- 🫀 Heart Failure  
+- 🧽 Chronic Kidney Disease (CKD)  
+- 🫁 Chronic Obstructive Pulmonary Disease (COPD)  
+- ❤️ Coronary Artery Disease (CAD)  
+- 🔬 Other conditions (not included in the study)
+
+These cohorts are assumed to be distributed across **four hospitals**, each locally hosting data for one specific condition.
+
+---
+
+## 📁 Project Structure
+
+- `data/` – Simulated or real data (not included)  
+- `notebooks/` – Jupyter notebooks for data exploration, modeling, and results  
+- `scripts/` – Scripts for data preprocessing, federation, and synthetic data generation  
+- `results/` – Figures, model scores, and result summaries
+
+---
+
+## 🎯 Objectives
+
+1. Data preprocessing and cleaning  
+2. Training classical models locally  
+3. Cross-site evaluation  
+4. Implementation of federated learning with:
+   - Federated Logistic Regression  
+   - Federated XGBoost  
+5. Synthetic data generation using **RealTabFormer**  
+6. Retraining models on synthetic data  
+7. Evaluating generalization performance
+
+---
+
+## 🧪 Models Explored
+
+| Type                       | Model                          |
+|----------------------------|--------------------------------|
+| Classical                  | Logistic Regression            |
+|                            | Random Forest                  |
+|                            | XGBoost                        |
+|                            | Gradient Boosting              |
+| Federated Learning         | Federated Logistic Regression  |
+|                            | Federated XGBoost              |
+| Generative (Augmentation)  | RealTabFormer                  |
+
+---
+
+## 🔍 Results
+
+The results compare the performance of:
+- **Locally trained models**
+- **Federated learning models**
+- **Models trained on synthetic data**
+
+Metrics include:
+- AU-ROC (Area Under the Receiver Operating Characteristic Curve)  
+- AU-PRC (Area Under the Precision-Recall Curve)
+
+---
+
+## 👩‍💻 Author
+
+**Siham Si Hadj Mohand**  
+Master’s in Electrical Engineering · Passionate about AI, Data Science, and Embedded Systems
+[LinkedIn](www.linkedin.com/in/siham-s) | [Email](siham.sihadj@gmail.com)
+
+
+---
+
+## 📚 References
+
+- **MIMIC-IV ICU**  
+  [https://physionet.org/content/mimiciv/](https://physionet.org/content/mimiciv/)
+
+- **RealTabFormer**  
+  [https://github.com/worldbank/REaLTabFormer](https://github.com/worldbank/REaLTabFormer)  
+  A. V. Solatorio and O. Dupriez, _“REaLTabFormer: Generating realistic relational and tabular data using transformers,”_  
+  *arXiv preprint* [arXiv:2302.02041](https://arxiv.org/abs/2302.02041), 2023.
+
+- **Data Processing Pipeline**  
+  M. Gupta, B. M. Gallamoza, N. Cutrona, P. Dhakal, R. Poulain, and R. Beheshti,  
+  _“An extensive data processing pipeline for MIMIC-IV,”_  
+  In *Proceedings of the 2nd Machine Learning for Health Symposium*, PMLR, Vol. 193, 2022, pp. 311–325.
+
 # 🧠 Évaluation du potentiel des techniques génératives pour améliorer la généralisation en apprentissage fédéré
 
 Ce projet explore le potentiel des **stratégies d’augmentation de données génératives** pour améliorer la généralisation des modèles en **apprentissage fédéré**, tout en respectant la confidentialité des données.  
@@ -75,7 +171,7 @@ Les métriques incluent :
 ## 👩‍💻 Auteur
 
 **Siham Si Hadj Mohand**  
-Maîtrise en génie électrique · Passionnée par l’IA, l'apprentissage fédéré et les données médicales  
+Maîtrise en génie électrique · Passionnée par l’IA, la science des données et les systèmes embarqués  
 [LinkedIn](www.linkedin.com/in/siham-s) | [Email](siham.sihadj@gmail.com)
 
 ---
