@@ -1,3 +1,5 @@
+
+This folder contains code from the project https://github.com/adap/flower/tree/main/examples/sklearn-logreg-mnist, used as-is without modification. Original license: Apache License 2.0.
 # FederatedLearningLR: A Flower / sklearn app
 
 ## Install dependencies and project
