@@ -10,9 +10,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ---
 
+### Tierce partie – Composants réutilisés
 
-This project includes code from the following external sources:
-
+Ce projet inclut du code provenant des projets suivants, chacun sous sa propre licence :
 - **MIMIC-IV Data Pipeline**  
   Repository: [https://github.com/healthylaife/MIMIC-IV-Data-Pipeline](https://github.com/healthylaife/MIMIC-IV-Data-Pipeline)  
   Copyright © 2023 Healthy LAife Lab  
