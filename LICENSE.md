@@ -29,6 +29,9 @@ This project includes code from the following projects, each under its respectiv
   Licensed under the Apache License 2.0.
 
 - **FATE Logistic Regression**  
-  Documentation: [https://fate.readthedocs.io/en/develop/_build_temp/python/federatedml/linear_model/logistic_regression/README.html](https://fate.readthedocs.io/en/develop/_build_temp/python/federatedml/linear_model/logistic_regression/README.html)  
+  Documentation: [https://fate.readthedocs.io/en/develop/_build_temp/python/federatedml/linear_model/logistic_regression/README.html](https://fate.readthedocs.io/en/develop/_build_temp/python/federatedml/linear_model/logistic_regression/README.html)
+  Repository: [  https://github.com/adap/flower/tree/main/examples/sklearn-logreg-mnist](  https://github.com/adap/flower/tree/main/examples/sklearn-logreg-mnist
+)  
+
   Licensed under the Apache License 2.0.
 
